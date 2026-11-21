@@ -1,0 +1,101 @@
+/* Дополнения к вашим стилям: только НОВЫЕ элементы, оригиналы не тронуты. */
+
+/* --- Живые статусы под кнопками (успех / ошибка) --- */
+.status {
+	margin-top: 14px;
+	font-size: 14px;
+	min-height: 20px;      /* резервируем место, чтобы форма не «прыгала» */
+	text-align: center;
+}
+.status--ok  { color: #3ddc97; } /* зелёный успех из палитры тёмной темы */
+.status--err { color: #ff6b6b; } /* красный ошибки */
+
+/* --- Ссылки в футере --- */
+footer a { color: #8195ff; }
+footer a:hover { color: #a3b1ff; }
+
+/* --- Кнопка-лейбл загрузки: inline-элементу ширина не действует, делаем блочным --- */
+.upload-btn {
+	display: block;
+	text-align: center;
+	cursor: pointer;
+}
+.upload-btn:hover { border-color: #8195ff; background: #2b3445; }
+
+/* --- Заблокированная кнопка во время отправки --- */
+.submit-button:disabled { opacity: 0.6; cursor: wait; }
+
+/* --- Админка: широкая карточка, прижатая к верху --- */
+.admin-body { align-items: flex-start; padding-top: 96px; }
+.container--wide { max-width: 980px; }
+
+/* --- Кнопка «Выйти» в углу (сбрасываем стандартный вид button) --- */
+.logout-btn {
+	background: #252c3a;
+	border: 1px solid #414b5e;
+	border-radius: 8px;
+	padding: 10px 18px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.logout-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
+
+/* --- Таблица заявок --- */
+.table-wrap { overflow-x: auto; } /* на телефоне таблица скроллится вбок */
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+}
+.table th, .table td {
+	padding: 12px 10px;
+	text-align: left;
+	border-bottom: 1px solid #303747;
+	vertical-align: top;
+}
+.table th { color: #929bad; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.table tbody tr:hover { background: #20263400; background: #202634; }
+
+/* --- Чипы мероприятий --- */
+.tag {
+	display: inline-block;
+	background: #303b55;
+	border: 1px solid #414b5e;
+	color: #b9c4ff;
+	border-radius: 6px;
+	padding: 3px 8px;
+	font-size: 12px;
+	margin: 2px 2px 2px 0;
+}
+
+/* --- Ссылка на документ и кнопка удаления --- */
+.file-link { color: #8195ff; display: inline-block; margin: 2px 0; }
+.file-link:hover { color: #a3b1ff; text-decoration: underline; }
+.delete-btn {
+	background: transparent;
+	border: 1px solid #414b5e;
+	color: #ff6b6b;
+	border-radius: 6px;
+	padding: 6px 12px;
+	font-size: 13px;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.delete-btn:hover { border-color: #ff6b6b; background: #3a2430; }
+
+.muted { color: #929bad; }
+.empty { color: #929bad; text-align: center; padding: 32px 0; }
+
+/* --- Скроллбар в палитре проекта (вместо системного серого) --- */
+html { scrollbar-color: #414b5e #1a1f2b; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #1a1f2b; }
+::-webkit-scrollbar-thumb { background: #414b5e; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #7188ff; }
+
+@media (max-width: 640px) {
+	.admin-body { padding-top: 84px; }
+	.login { right: 18px; top: 18px; }
+	.table { font-size: 13px; }
+}

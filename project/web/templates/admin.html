@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Заявки — панель администратора</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/app.css"> <!-- таблица, теги, широкая карточка -->
+</head>
+<body class="admin-body"> <!-- прижимаем карточку к верху: таблица может быть длинной -->
+	<!-- Кнопка выхода в том же углу, где ссылка входа на главной -->
+	<button class="login logout-btn" id="logout-btn" type="button">Выйти</button>
+
+	<main class="container container--wide">
+		<header>
+			<h1>Заявки студентов</h1>
+			<!-- len — встроенная функция шаблона: длина среза -->
+			<p id="count">Всего: {{len .}}</p>
+		</header>
+
+		{{if .}} <!-- точка = срез заявок; непустой срез = true -->
+		<div class="table-wrap"> <!-- горизонтальный скролл таблицы на телефоне -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>№</th><th>Группа</th><th>Мероприятия</th>
+						<th>Дата</th><th>Документ</th><th></th>
+					</tr>
+				</thead>
+				<tbody>
+				{{range .}} <!-- перебираем заявки; внутри точки — текущая заявка -->
+					<tr data-id="{{.ID}}"> <!-- data-id нужен admin.js для удаления строки -->
+						<td>{{.ID}}</td>
+						<td>{{.Group}}</td>
+						<td>
+							{{range .Activities}}<span class="tag">{{.}}</span> {{end}}
+						</td>
+						<!-- "02.01.2006 15:04" — не случайная дата! В Go формат задаётся
+						     эталонным моментом 02.01.2006 15:04:05 (см. time.Format) -->
+						<td>{{.CreatedAt.Format "02.01.2006 15:04"}}</td>
+						<td>
+							{{if .Files}}
+								{{range .Files}}
+									<!-- Ссылка закрыта requireAuth: без входа файл не отдать -->
+									<a class="file-link" href="/uploads/{{.StoredName}}"
+									   target="_blank" rel="noopener">
+										{{.OriginalName}} ({{.HumanSize}}) <!-- наш метод структуры! -->
+									</a>
+								{{end}}
+							{{else}}
+								<span class="muted">—</span> <!-- документа нет -->
+							{{end}}
+						</td>
+						<td><button class="delete-btn" data-id="{{.ID}}" type="button">Удалить</button></td>
+					</tr>
+				{{end}}
+				</tbody>
+			</table>
+		</div>
+		{{else}} <!-- заявок нет вовсе -->
+			<p class="empty">Заявок пока нет — они появятся здесь после отправки формы.</p>
+		{{end}}
+
+		<footer>Удаление заявки убирает и её файлы. Действие необратимо.</footer>
+	</main>
+
+	<script src="/static/js/admin.js"></script>
+</body>
+</html>

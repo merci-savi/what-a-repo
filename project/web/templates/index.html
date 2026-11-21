@@ -1,0 +1,47 @@
+<!DOCTYPE html> <!-- говорим браузеру: современный стандарт HTML5 -->
+<html lang="ru"> <!-- язык страницы: важно для скринридеров и перевода -->
+<head>
+	<meta charset="UTF-8"> <!-- кодировка: кириллица без «кракозябр» -->
+	<meta name="viewport" content="width=device-width, initial-scale=1"> <!-- адаптив на телефоне -->
+	<title>Учёт активности студентов</title> <!-- заголовок вкладки -->
+	<link rel="stylesheet" href="/static/css/index.css"> <!-- ваш основной стиль -->
+	<link rel="stylesheet" href="/static/css/app.css">   <!-- дополнения: статусы и т.п. -->
+</head>
+<body>
+	<!-- Ссылка входа для администратора (класс .login фиксирован в правом верхнем углу) -->
+	<a class="login" href="/login">Вход для администратора</a>
+
+	<main class="container"> <!-- центральная карточка формы -->
+		<header>
+			<h1>Отчёт об активности</h1>
+			<p>Выберите свою группу и мероприятия, которые вы посетили</p>
+		</header>
+
+		<!-- Форму отправляет index.js через fetch (без перезагрузки страницы) -->
+		<form id="report-form">
+			<section class="section">
+				<h2>Ваша группа</h2>
+				<!-- Опции добавит index.js; первая — подсказка-пустышка с value="" -->
+				<select id="group" name="group" required>
+					<option value="" disabled selected>— Выберите группу —</option>
+				</select>
+			</section>
+
+			<section class="section">
+				<h2>Мероприятия</h2>
+				<!-- Чекбоксы сгенерирует index.js из массива activities -->
+				<div class="activities"></div>
+			</section>
+
+			<button class="submit-button" type="submit">Отправить отчёт</button>
+			<!-- Живой статус: JS пишет сюда «Отправляем…», ошибки, успех -->
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+
+		<footer>Отчёт сохранится в базе, затем можно прикрепить подтверждающий документ</footer>
+	</main>
+
+	<!-- Скрипт в конце body: DOM уже построен, querySelector всё найдёт -->
+	<script src="/static/js/index.js"></script>
+</body>
+</html>

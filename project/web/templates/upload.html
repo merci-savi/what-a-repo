@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Загрузка документа</title>
+	<link rel="stylesheet" href="/static/css/index.css">  <!-- база: карточка, кнопка -->
+	<link rel="stylesheet" href="/static/css/upload.css"> <!-- ваш стиль кнопки-лейбла -->
+	<link rel="stylesheet" href="/static/css/app.css">    <!-- статусы, display для лейбла -->
+</head>
+<body>
+	<main class="container">
+		<header>
+			<h1>Подтверждающий документ</h1>
+			<p>Прикрепите фото, скан или справку (JPG, PNG, WEBP, PDF — до 10 МБ)</p>
+		</header>
+
+		<!-- upload.js прочитает ?id= из адреса и отправит файл на POST /api/upload -->
+		<form id="upload-form">
+			<section class="section">
+				<!-- Лейбл выглядит как кнопка; клик по нему открывает скрытый input -->
+				<label class="upload-btn" for="file-upload-btn">Выберите файл</label>
+				<input type="file" id="file-upload-btn" name="file"
+					   accept=".jpg,.jpeg,.png,.webp,.pdf">
+				<!-- Сюда upload.js выведет имя выбранного файла (ваш оригинальный код) -->
+				<p>Файл не выбран</p>
+			</section>
+
+			<button class="submit-button" type="submit">Загрузить</button>
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+
+		<footer><a href="/">← Отправить ещё один отчёт</a></footer>
+	</main>
+
+	<script src="/static/js/upload.js"></script>
+</body>
+</html>
