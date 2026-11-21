@@ -463,9 +463,9 @@ func (s *Storage) Rooms() ([]string, error) { // все аудитории
 func occupancyCond(week string) (string, []any) {
 	switch week {
 	case model.WeekNum:
-		return " AND week_type IN ('all','num')", nil
+		return " AND week_type IN ('Все','Числитель')", nil
 	case model.WeekDen:
-		return " AND week_type IN ('all','den')", nil
+		return " AND week_type IN ('Все','Знаменатель')", nil
 	default: // all конфликтует с любыми
 		return "", nil
 	}
