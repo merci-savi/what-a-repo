@@ -68,7 +68,18 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 
 	// CalDAV: ВСЕ методы (PROPFIND/REPORT/...), поэтому паттерн без метода.
 	// Basic-auth: логин + пароль ИЛИ логин + ical-хеш (привязка пользователя к календарю).
-	mux.Handle("/caldav/", h.caldavBasicAuth(&caldav.Handler{Backend: h.caldavB, Prefix: "/caldav/"}))
+	caldavMux := h.caldavBasicAuth(&caldav.Handler{Backend: h.caldavB, Prefix: "/caldav/"})
+	mux.Handle("/caldav/", caldavMux)
+	// /.well-known/caldav — адрес обнаружения (RFC 6764). Без него мобильные
+	// клиенты (iOS Calendar, Thunderbird, GNOME) не находят сервер вообще.
+	// Запрос переадресуем на /caldav/ тем же обработчиком — клиент получит
+	// либо 401 с WWW-Authenticate (если не прислал логин), либо свойства
+	// текущего пользователя и набор календарей.
+	mux.Handle("/.well-known/caldav", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r2 := r.Clone(r.Context()) // копия запроса: правим только путь
+		r2.URL.Path = "/caldav/"   // дальше всё как обычно — PROPFIND/REPORT по /caldav/
+		caldavMux.ServeHTTP(w, r2)
+	}))
 }
 
 // root — «сначала авторизация»: без сессии → /login, с сессией → домашняя страница роли.

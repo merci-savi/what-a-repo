@@ -44,15 +44,25 @@ func New(host string, start, end time.Time) *Generator { // конструкто
 // Москва с 2014 года живёт в UTC+3 без летнего времени, поэтому хватает
 // одного подкомпонента STANDARD с постоянным смещением.
 func vtimezone() *ical.Component {
-	tz := ical.NewComponent("VTIMEZONE")            // BEGIN:VTIMEZONE
-	tz.Props.SetText("TZID", tzID)                  // TZID:Europe/Moscow
-	std := ical.NewComponent("STANDARD")            // BEGIN:STANDARD (подкомпонент пояса)
-	std.Props.SetText("DTSTART", "19700101T000000") // правило действует «с всегда»
-	std.Props.SetText("TZOFFSETFROM", "+0300")      // смещение до перехода
-	std.Props.SetText("TZOFFSETTO", "+0300")        // смещение после (то же самое)
-	std.Props.SetText("TZNAME", "MSK")              // короткое имя пояса
-	tz.Children = append(tz.Children, std)          // вкладываем STANDARD в VTIMEZONE
+	tz := ical.NewComponent("VTIMEZONE")                // BEGIN:VTIMEZONE
+	tz.Props.SetText("TZID", tzID)                      // TZID:Europe/Moscow
+	std := ical.NewComponent("STANDARD")                // BEGIN:STANDARD (подкомпонент пояса)
+	setRawProp(std.Props, "DTSTART", "19700101T000000") // правило действует «с всегда» (DATE-TIME)
+	setRawProp(std.Props, "TZOFFSETFROM", "+0300")      // смещение до перехода (UTC-OFFSET)
+	setRawProp(std.Props, "TZOFFSETTO", "+0300")        // смещение после (то же самое)
+	std.Props.SetText("TZNAME", "MSK")                  // короткое имя пояса (тип TEXT — по умолчанию)
+	tz.Children = append(tz.Children, std)              // вкладываем STANDARD в VTIMEZONE
 	return tz
+}
+
+// setRawProp кладёт свойство БЕЗ параметра VALUE: тип берётся тот, что по
+// умолчанию в RFC 5545 (RRULE → RECUR, SEQUENCE → INTEGER, TZOFFSET* → UTC-OFFSET).
+// Нужен там, где SetText поставил бы неверный VALUE=TEXT: с таким значением
+// строгие клиенты и сам go-webdav (разбор RRULE в REPORT) отвергают файл.
+func setRawProp(props ical.Props, name, value string) {
+	p := ical.NewProp(name) // без Params → VALUE не печатается в .ics
+	p.Value = value
+	props.Set(p)
 }
 
 // setLocalDateTime ставит DTSTART/DTEND как локальное время С параметром TZID:
@@ -99,16 +109,23 @@ func (g *Generator) Event(l model.Lesson) *ical.Component {
 	ev := ical.NewComponent("VEVENT") // BEGIN:VEVENT
 	// UID СТАБИЛЕН (номер строки БД): при обновлении клиент меняет событие, а не плодит дубли.
 	ev.Props.SetText("UID", fmt.Sprintf("lesson-%d@%s", l.ID, g.Host))
-	ev.Props.SetDateTime("DTSTAMP", time.Now().UTC()) // DTSTAMP:...Z — момент генерации
-	start, end := g.firstSlot(l)                      // первая пара с учётом чётности недели
-	setLocalDateTime(ev, "DTSTART", start)            // DTSTART;TZID=Europe/Moscow:...
-	setLocalDateTime(ev, "DTEND", end)                // DTEND;TZID=Europe/Moscow:...
-	// SEQUENCE по стандарту — целое число, но в .ics это просто текст после двоеточия.
+	// DTSTAMP — момент последнего изменения занятия (из БД), а НЕ time.Now():
+	// иначе содержимое .ics менялось бы при каждом запросе и ETag «плавал» бы —
+	// клиент считал бы все события изменёнными и заново перекачивал календарь.
+	dtstamp := l.UpdatedAt.UTC()
+	if dtstamp.IsZero() {
+		dtstamp = time.Now().UTC() // страховка: если UpdatedAt не заполнен
+	}
+	ev.Props.SetDateTime("DTSTAMP", dtstamp) // DTSTAMP:...Z
+	start, end := g.firstSlot(l)             // первая пара с учётом чётности недели
+	setLocalDateTime(ev, "DTSTART", start)   // DTSTART;TZID=Europe/Moscow:...
+	setLocalDateTime(ev, "DTEND", end)       // DTEND;TZID=Europe/Moscow:...
+	// SEQUENCE по стандарту — целое число (тип INTEGER по умолчанию, VALUE не печатается).
 	// Метода SetInt в библиотеке нет, поэтому число превращаем в строку сами.
-	ev.Props.SetText("SEQUENCE", strconv.Itoa(l.Sequence)) // 0, 1, 2… — растёт при изменениях
-	ev.Props.SetText("SUMMARY", l.Title+" ("+l.Type+")")   // заголовок события
-	ev.Props.SetText("LOCATION", l.Place)                  // аудитория
-	ev.Props.SetText("DESCRIPTION", strings.Join([]string{ // описание в несколько строк
+	setRawProp(ev.Props, "SEQUENCE", strconv.Itoa(l.Sequence)) // 0, 1, 2… — растёт при изменениях
+	ev.Props.SetText("SUMMARY", l.Title+" ("+l.Type+")")       // заголовок события
+	ev.Props.SetText("LOCATION", l.Place)                      // аудитория
+	ev.Props.SetText("DESCRIPTION", strings.Join([]string{     // описание в несколько строк
 		"Преподаватель: " + l.PrepodName,
 		"Группа/активность: " + l.GroupNumber,
 		"Неделя: " + model.WeekLabel(l.WeekType),
@@ -121,7 +138,10 @@ func (g *Generator) Event(l model.Lesson) *ical.Component {
 		interval = 2
 	}
 	until := time.Date(g.End.Year(), g.End.Month(), g.End.Day(), 23, 59, 59, 0, time.UTC)
-	ev.Props.SetText("RRULE", fmt.Sprintf(
+	// Тип свойства RRULE — RECUR (по умолчанию в RFC 5545). Через SetText был бы
+	// VALUE=TEXT, и тогда go-webdav не смог бы развернуть правило в REPORT → клиент
+	// получил бы пустой календарь.
+	setRawProp(ev.Props, "RRULE", fmt.Sprintf(
 		"FREQ=WEEKLY;INTERVAL=%d;BYDAY=%s;UNTIL=%s",
 		interval, model.DayCodes[l.Day], until.Format("20060102T150405Z")))
 	ev.Props.SetText("STATUS", "CONFIRMED") // событие подтверждено
@@ -131,12 +151,12 @@ func (g *Generator) Event(l model.Lesson) *ical.Component {
 
 // Calendar собирает целый VCALENDAR: шапка + VTIMEZONE + все события.
 func (g *Generator) Calendar(u model.User, lessons []model.Lesson, feed bool) *ical.Calendar {
-	cal := ical.NewCalendar()                                       // пустой VCALENDAR
-	cal.Props.SetText("VERSION", "2.0")                             // VERSION:2.0
-	cal.Props.SetText("PRODID", "-//StudentActivity//Schedule//RU") // PRODID — кто сгенерировал
-	cal.Props.SetText("CALSCALE", "GREGORIAN")                      // григорианский календарь
-	cal.Props.SetText("X-WR-CALNAME", "Расписание — "+u.Username)   // имя календаря в клиенте
-	cal.Props.SetText("X-WR-TIMEZONE", tzID)                        // подсказка о поясе клиенту
+	cal := ical.NewCalendar()                                         // пустой VCALENDAR
+	cal.Props.SetText("VERSION", "2.0")                               // VERSION:2.0
+	cal.Props.SetText("PRODID", "-//StudentActivity//Schedule//RU")   // PRODID — кто сгенерировал
+	cal.Props.SetText("CALSCALE", "GREGORIAN")                        // григорианский календарь
+	setRawProp(cal.Props, "X-WR-CALNAME", "Расписание — "+u.Username) // имя календаря в клиенте
+	setRawProp(cal.Props, "X-WR-TIMEZONE", tzID)                      // подсказка о поясе клиенту
 	if feed {
 		cal.Props.SetText("METHOD", "PUBLISH") // METHOD:PUBLISH — для ленты подписки
 	}
