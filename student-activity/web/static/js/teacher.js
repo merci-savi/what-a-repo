@@ -16,7 +16,7 @@ console.log(D)
 	`<optgroup label="Доп. активности">${D.extras.map(a => `<option value="${a}">${a}</option>`).join('')}</optgroup>`)
 for (const d of D.days) $('#day').insertAdjacentHTML('beforeend', `<option value="${d.n}">${d.label}</option>`)
 for (const p of D.pairs) $('#pair').insertAdjacentHTML('beforeend', `<option value="${p.n}">${p.label}</option>`)
-for (const w of D.weeks) $('#week').insertAdjacentHTML('beforeend', `<option value="${w.v}">${w.label}</option>`)
+for (const w of D.weeks) $('#week').insertAdjacentHTML('beforeend', `<option value="${w.label}">${w.label}</option>`)
 
 // Свободные аудитории: запрашиваем при каждом изменении дня/пары/недели
 const room = $('#room')
