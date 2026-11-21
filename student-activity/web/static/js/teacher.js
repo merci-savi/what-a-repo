@@ -11,7 +11,8 @@ function setStatus(t, err = false) {
 const target = $('#target')
 target.insertAdjacentHTML('beforeend',
 	`<optgroup label="Группы">${D.groups.map(g => `<option value="${g}">Группа ${g}</option>`).join('')}</optgroup>`)
-target.insertAdjacentHTML('beforeend',
+console.log(D)
+ target.insertAdjacentHTML('beforeend',
 	`<optgroup label="Доп. активности">${D.extras.map(a => `<option value="${a}">${a}</option>`).join('')}</optgroup>`)
 for (const d of D.days) $('#day').insertAdjacentHTML('beforeend', `<option value="${d.n}">${d.label}</option>`)
 for (const p of D.pairs) $('#pair').insertAdjacentHTML('beforeend', `<option value="${p.n}">${p.label}</option>`)
@@ -67,6 +68,6 @@ $('#request-form').addEventListener('submit', async (e) => {
 })
 
 $('#logout-btn')?.addEventListener('click', async () => {
-	try { await fetch('/api/logout', { method: 'POST' }) } catch (_) {}
-	window.location.href = '/login'
+    try { await fetch('/api/logout', { method: 'POST' }) } catch (_) {}
+    window.location.href = '/login'
 })

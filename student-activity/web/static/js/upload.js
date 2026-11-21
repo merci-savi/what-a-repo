@@ -27,6 +27,7 @@ form.addEventListener('submit', async (e) => {
 	try {
 		const res = await fetch('/admin/upload', { method: 'POST', body: fd }) // boundary ставит браузер
 		const data = await res.json()
+		console.log(fd.entries)
 		if (!res.ok) throw new Error(data.error || 'Ошибка сервера')
 		setStatus(`Готово: добавлено ${data.added}, обновлено ${data.updated} (SEQUENCE+1), без изменений ${data.unchanged}, пропущено ${data.skipped}`)
 		if (data.warnings && data.warnings.length) {

@@ -238,20 +238,43 @@ func (s *Storage) CreateSession(token string, userID int64, expires time.Time) e
 	return err
 }
 
+//	func (s *Storage) SessionUser(token string) (model.User, error) {
+//		row := s.db.QueryRow(`SELECT `+userCols+` FROM users u
+//			JOIN sessions s ON s.user_id = u.id
+//			WHERE s.token = ? AND s.expires_at > ?`, token, time.Now().Unix())
+//		// В JOIN имена колонок уточняем префиксом, иначе "ambiguous column name".
+//		row = s.db.QueryRow(`SELECT u.id, u.username, u.password_hash, u.role, u.full_name,
+//			u.group_number, u.ical_hash, u.created_at FROM users u
+//			JOIN sessions s ON s.user_id = u.id
+//			WHERE s.token = ? AND s.expires_at > ?`, token, time.Now().Unix())
+//		u, err := scanUser(row)
+//		if errors.Is(err, sql.ErrNoRows) {
+//			return model.User{}, ErrNotFound
+//		}
+//		return u, err
+//	}
+//
+// SessionUser по токену из куки возвращает пользователя, если сессия жива.
 func (s *Storage) SessionUser(token string) (model.User, error) {
-	row := s.db.QueryRow(`SELECT `+userCols+` FROM users u
-		JOIN sessions s ON s.user_id = u.id
-		WHERE s.token = ? AND s.expires_at > ?`, token, time.Now().Unix())
-	// В JOIN имена колонок уточняем префиксом, иначе "ambiguous column name".
-	row = s.db.QueryRow(`SELECT u.id, u.username, u.password_hash, u.role, u.full_name,
-		u.group_number, u.ical_hash, u.created_at FROM users u
-		JOIN sessions s ON s.user_id = u.id
-		WHERE s.token = ? AND s.expires_at > ?`, token, time.Now().Unix())
-	u, err := scanUser(row)
+	// ВАЖНО: ровно ОДИН QueryRow и обязательный Scan.
+	// QueryRow выполняет запрос СРАЗУ и удерживает соединение до вызова Scan.
+	// Непрочитанный QueryRow = утечка соединения; при пуле из 1 соединения
+	// следующий запрос ждёт вечно — сайт «зависает» без единой ошибки.
+	row := s.db.QueryRow(`
+					SELECT u.id, u.username, u.password_hash, u.role, u.full_name,
+						u.group_number, u.ical_hash, u.created_at
+					FROM users u
+					JOIN sessions s ON s.user_id = u.id
+					WHERE s.token = ? AND s.expires_at > ?`,
+		token, time.Now().Unix()) // срок годности билета проверяем прямо в SQL
+	u, err := scanUser(row) // Scan раскладывает колонки и ОСВОБОЖДАЕТ соединение
 	if errors.Is(err, sql.ErrNoRows) {
-		return model.User{}, ErrNotFound
+		return model.User{}, ErrNotFound // билета нет или он протух — это не ошибка
 	}
-	return u, err
+	if err != nil {
+		return model.User{}, fmt.Errorf("получить сессию: %w", err) // настоящая проблема БД
+	}
+	return u, nil
 }
 
 func (s *Storage) DeleteSession(token string) error {

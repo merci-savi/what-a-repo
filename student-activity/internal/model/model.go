@@ -48,6 +48,8 @@ func PairLabel(n int) string { // подпись для селекта: "3 па�
 
 // ---------- Дни недели ----------
 var DayNumbers = []int{1, 2, 3, 4, 5, 6} // 1=Пн ... 6=Сб
+var WeeksNumbers = []int{1, 2}           // 1=Пн ... 6=Сб
+var Weeks = map[int]string{1: "Числитель", 2: "Знаменатель"}
 var DayNames = map[int]string{1: "Понедельник", 2: "Вторник", 3: "Среда",
 											4: "Четверг", 5: "Пятница", 6: "Суббота"}
 var DayCodes = map[int]string{1: "MO", 2: "TU", 3: "WE", 4: "TH", 5: "FR", 6: "SA"} // для RRULE BYDAY

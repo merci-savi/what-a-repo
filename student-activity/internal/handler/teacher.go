@@ -26,11 +26,15 @@ func (h *Handler) pageTeacher(w http.ResponseWriter, r *http.Request) {
 	for _, n := range model.DayNumbers {
 		days = append(days, map[string]any{"n": n, "label": model.DayNames[n]})
 	}
+	var weeks []map[string]any
+	for _, n := range model.WeeksNumbers {
+		weeks = append(weeks, map[string]any{"n": n, "label": model.Weeks[n]})
+	}
 	h.render(w, "teacher.html", map[string]any{
 		"Username": u.Username,
 		"Requests": reqs,
 		"AppData": appDataJSON(map[string]any{ // было appData(...)
-			"groups": groups, "activities": extras,
+			"groups": groups, "extras": extras, "days": days, "pairs": pairs, "weeks": weeks,
 		}),
 	})
 }
