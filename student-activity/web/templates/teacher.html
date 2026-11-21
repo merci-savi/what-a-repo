@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Заявка на лекцию</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="admin-body" data-app="{{.AppData}}">
+	<button class="login logout-btn" id="logout-btn" type="button">Выйти ({{.Username}})</button>
+	<main class="container container--wide">
+		<header>
+			<h1>Заявка на свою лекцию</h1>
+			<p>Свободные аудитории подгружаются из расписания после выбора дня, пары и недели</p>
+		</header>
+
+		<form id="request-form" class="form-grid">
+			<section class="section">
+				<h2>Название лекции</h2>
+				<input type="text" id="title" class="text-input" placeholder="Например: Введение в Go" required>
+			</section>
+			<section class="section">
+				<h2>Группа / доп. активность</h2>
+				<select id="target" required><option value="" disabled selected>— Выберите —</option></select>
+			</section>
+			<section class="section">
+				<h2>День</h2>
+				<select id="day" required><option value="" disabled selected>— День —</option></select>
+			</section>
+			<section class="section">
+				<h2>Пара</h2>
+				<select id="pair" required><option value="" disabled selected>— Пара —</option></select>
+			</section>
+			<section class="section">
+				<h2>Неделя</h2>
+				<select id="week" required><option value="" disabled selected>— Неделя —</option></select>
+			</section>
+			<section class="section">
+				<h2>Свободная аудитория</h2>
+				<select id="room" required disabled><option value="">Сначала день/пара/неделя</option></select>
+			</section>
+			<div class="form-wide">
+				<button class="submit-button" type="submit">Отправить заявку</button>
+				<p class="status" id="status" role="status" aria-live="polite"></p>
+			</div>
+		</form>
+
+		<section class="section">
+			<h2>Мои заявки</h2>
+			{{if .Requests}}
+			<div class="table-wrap">
+				<table class="table">
+					<thead><tr><th>№</th><th>Лекция</th><th>Для</th><th>Когда</th><th>Аудитория</th><th>Статус</th></tr></thead>
+					<tbody>
+					{{range .Requests}}
+					<tr>
+						<td>{{.ID}}</td><td>{{.Title}}</td><td>{{.Target}}</td>
+						<td>{{.Day}} день, {{.Pair}} пара</td>
+						<td>{{.Place}}</td>
+						<td><span class="badge badge--{{.Status}}">{{.Status}}</span></td>
+					</tr>
+					{{end}}
+					</tbody>
+				</table>
+			</div>
+			{{else}}<p class="empty">Заявок пока нет.</p>{{end}}
+		</section>
+		<footer>После одобрения админом лекция появится в расписании выбранной группы</footer>
+	</main>
+	<script src="/static/js/teacher.js"></script>
+</body>
+</html>

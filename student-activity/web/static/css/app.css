@@ -1,0 +1,89 @@
+/* Статусы */
+.status { margin-top: 14px; font-size: 14px; min-height: 20px; text-align: center; }
+.status--ok { color: #3ddc97; }
+.status--err { color: #ff6b6b; }
+footer a { color: #8195ff; }
+footer a:hover { color: #a3b1ff; }
+
+/* Кнопка-лейбл загрузки (ваш upload.css) */
+.upload-btn { display: block; text-align: center; cursor: pointer; }
+.upload-btn:hover { border-color: #8195ff; background: #2b3445; }
+.submit-button:disabled { opacity: 0.6; cursor: wait; }
+
+/* Длинные страницы */
+.admin-body { align-items: flex-start; padding-top: 96px; }
+.container--wide { max-width: 980px; }
+
+/* Выход в углу */
+.logout-btn { background: #252c3a; border: 1px solid #414b5e; border-radius: 8px;
+	padding: 10px 18px; font-size: 14px; cursor: pointer; transition: 0.2s; }
+.logout-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
+
+/* Меню админа справа */
+.side-menu { position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+	display: flex; flex-direction: column; gap: 12px; z-index: 10; }
+.side-btn { background: #252c3a; border: 1px solid #414b5e; border-radius: 10px;
+	padding: 14px 18px; font-size: 14px; color: #e8eaf0; transition: 0.2s; white-space: nowrap; }
+.side-btn:hover { border-color: #8195ff; background: #303b55; }
+
+/* Таблицы */
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th, .table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #303747; vertical-align: top; }
+.table th { color: #929bad; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.table tbody tr:hover { background: #202634; }
+.muted { color: #929bad; }
+.empty { color: #929bad; text-align: center; padding: 32px 0; }
+
+/* Бейджи статусов заявок */
+.badge { display: inline-block; border-radius: 6px; padding: 3px 8px; font-size: 12px; border: 1px solid #414b5e; }
+.badge--pending { background: #3a3423; color: #ffd479; border-color: #5c5230; }
+.badge--approved { background: #1e3a2f; color: #3ddc97; border-color: #2c5c48; }
+.badge--rejected { background: #3a2430; color: #ff6b6b; border-color: #5c3040; }
+
+/* Кнопки решений */
+.approve-btn, .reject-btn, .copy-btn { border-radius: 6px; padding: 6px 12px; font-size: 13px;
+	cursor: pointer; transition: 0.2s; border: 1px solid #414b5e; background: transparent; margin: 2px; }
+.approve-btn { color: #3ddc97; } .approve-btn:hover { border-color: #3ddc97; background: #1e3a2f; }
+.reject-btn { color: #ff6b6b; } .reject-btn:hover { border-color: #ff6b6b; background: #3a2430; }
+.copy-btn { color: #8195ff; } .copy-btn:hover { border-color: #8195ff; background: #303b55; }
+
+/* Блок ссылок студента */
+.link-box { margin-top: 28px; border-top: 1px solid #303747; padding-top: 24px; }
+.link-box p { margin: 8px 0; font-size: 14px; }
+.link-box a { color: #8195ff; }
+.link-box code { background: #252c3a; border: 1px solid #414b5e; border-radius: 6px;
+	padding: 2px 8px; font-size: 13px; word-break: break-all; }
+.link-row { display: flex; gap: 8px; margin: 8px 0; }
+.link-row input { flex: 1; padding: 12px; background: #252c3a; color: #e8eaf0;
+	border: 1px solid #414b5e; border-radius: 8px; font-size: 13px; outline: none; }
+
+/* Форма преподавателя: сетка 2 колонки */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+.form-wide { grid-column: 1 / -1; }
+.text-input { width: 100%; padding: 14px; background: #252c3a; color: #e8eaf0;
+	border: 1px solid #414b5e; border-radius: 8px; font-size: 15px; outline: none; transition: 0.2s; }
+.text-input:focus { border-color: #8195ff; }
+
+/* Результат импорта CSV */
+.result { background: #252c3a; border: 1px solid #414b5e; border-radius: 8px;
+	padding: 16px; font-size: 13px; white-space: pre-wrap; margin-top: 16px; color: #b9c4ff; }
+
+/* Скроллбар в палитре */
+html { scrollbar-color: #414b5e #1a1f2b; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #1a1f2b; }
+::-webkit-scrollbar-thumb { background: #414b5e; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #7188ff; }
+
+@media (max-width: 1100px) {
+	/* Меню уходит наверх горизонтальной полосой, чтобы не перекрывать таблицу */
+	.side-menu { position: static; transform: none; flex-direction: row; justify-content: center;
+		margin: 0 auto 16px; }
+	.admin-body { padding-top: 24px; }
+}
+@media (max-width: 640px) {
+	.form-grid { grid-template-columns: 1fr; }
+	.login { right: 18px; top: 18px; }
+	.table { font-size: 13px; }
+}

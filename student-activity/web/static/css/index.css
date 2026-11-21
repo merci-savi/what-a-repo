@@ -1,0 +1,113 @@
+* { /* в исходнике звёздочка потерялась — без неё правило не работает */
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	text-decoration: none;
+	color: #e8eaf0;
+}
+body {
+	font-family: Arial, sans-serif;
+	background: #10131a;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 24px;
+}
+.login {
+	position: fixed;
+	top: 30px;
+	right: 60px;
+}
+.container {
+	width: 100%;
+	max-width: 600px;
+	background: #1a1f2b;
+	padding: 36px;
+	border-radius: 16px;
+	border: 1px solid #303747;
+}
+header {
+	margin-bottom: 32px;
+}
+h1 {
+	font-size: 28px;
+	margin-bottom: 10px;
+}
+header p, footer {
+	color: #929bad;
+	font-size: 14px;
+}
+.section {
+	margin-bottom: 28px;
+}
+h2 {
+	font-size: 18px;
+	margin-bottom: 14px;
+}
+select {
+	width: 100%;
+	padding: 14px;
+	background: #252c3a;
+	color: #e8eaf0;
+	border: 1px solid #414b5e;
+	border-radius: 8px;
+	font-size: 15px;
+}
+.activities {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.activity {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 15px;
+	background: #252c3a;
+	border: 1px solid #414b5e;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.activity:hover {
+	border-color: #8195ff;
+	background: #2b3445;
+}
+.activity:has(input:checked) {
+	border-color: #8195ff;
+	background: #303b55;
+}
+.activity input {
+	width: 17px;
+	height: 17px;
+	accent-color: #8195ff;
+	cursor: pointer;
+}
+.submit-button {
+	width: 100%;
+	padding: 15px;
+	background: #7188ff;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.submit-button:hover {
+	background: #879aff;
+}
+footer {
+	text-align: center;
+	margin-top: 22px;
+}
+@media (max-width: 480px) {
+	.container {
+		padding: 24px 18px;
+	}
+	h1 {
+		font-size: 24px;
+	}
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Регистрация студента</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/login.css">
+	<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+	<main class="container">
+		<header>
+			<h1>Регистрация</h1>
+			<p>Только для студентов. Преподавателей создаёт администратор.</p>
+		</header>
+		<form id="register-form">
+			<section class="section">
+				<h2>Логин</h2>
+				<input type="text" id="username" placeholder="Логин (латиница, 3–32)" autocomplete="username" required>
+			</section>
+			<section class="section">
+				<h2>Пароль</h2>
+				<input type="password" id="password" placeholder="Минимум 6 символов" autocomplete="new-password" required>
+			</section>
+			<section class="section">
+				<h2>Повтор пароля</h2>
+				<input type="password" id="password2" placeholder="Ещё раз" autocomplete="new-password" required>
+			</section>
+			<button class="submit-button" type="submit">Создать аккаунт</button>
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+		<footer><a href="/login">← Уже есть аккаунт? Войти</a></footer>
+	</main>
+	<script src="/static/js/register.js"></script>
+</body>
+</html>

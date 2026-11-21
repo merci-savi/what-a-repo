@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Преподаватели — админ</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/login.css">
+	<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="admin-body">
+	<main class="container container--wide">
+		<header>
+			<h1>Учётки преподавателей</h1>
+			<p>Создайте логин и пароль — преподаватель войдёт и подаст заявку</p>
+		</header>
+		<form id="teacher-form">
+			<section class="section">
+				<h2>Логин</h2>
+				<input type="text" id="username" placeholder="ivanov" required>
+			</section>
+			<section class="section">
+				<h2>ФИО</h2>
+				<input type="text" id="full_name" placeholder="Иванов Иван Иванович" required>
+			</section>
+			<section class="section">
+				<h2>Пароль</h2>
+				<input type="password" id="password" placeholder="Минимум 6 символов" required>
+			</section>
+			<button class="submit-button" type="submit">Создать преподавателя</button>
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+
+		<section class="section">
+			<h2>Существующие</h2>
+			{{if .Teachers}}
+			<div class="table-wrap">
+				<table class="table">
+					<thead><tr><th>Логин</th><th>ФИО</th></tr></thead>
+					<tbody>{{range .Teachers}}<tr><td>{{.Username}}</td><td>{{.FullName}}</td></tr>{{end}}</tbody>
+				</table>
+			</div>
+			{{else}}<p class="empty">Пока никого нет.</p>{{end}}
+		</section>
+		<footer><a href="/admin">← К заявкам</a></footer>
+	</main>
+	<script src="/static/js/teachers.js"></script>
+</body>
+</html>

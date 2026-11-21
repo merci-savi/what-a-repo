@@ -1,0 +1,19 @@
+input[type="text"],
+input[type="password"] {
+	width: 100%;
+	padding: 14px;
+	background: #252c3a;
+	color: #e8eaf0;
+	border: 1px solid #414b5e;
+	border-radius: 8px;
+	font-size: 15px;
+	outline: none;
+	transition: 0.2s;
+}
+input[type="text"]:focus,
+input[type="password"]:focus {
+	border-color: #8195ff;
+}
+input::placeholder {
+	color: #929bad;
+}

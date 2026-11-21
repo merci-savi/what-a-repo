@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Моё расписание</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<!-- JSON лежит в атрибуте: для редактора это просто текст, ошибки нет -->
+<body data-app="{{.AppData}}">
+	<button class="login logout-btn" id="logout-btn" type="button">Выйти ({{.Username}})</button>
+	<main class="container">
+		<header>
+			<h1>Группа и активности</h1>
+			<p>Выберите группу и доп. активности — календарь соберётся автоматически</p>
+		</header>
+
+		<form id="report-form">
+			<section class="section">
+				<h2>Ваша группа</h2>
+				<select id="group" name="group" required>
+					<option value="" disabled selected>— Выберите группу —</option>
+				</select>
+			</section>
+			<section class="section">
+				<h2>Доп. активности</h2>
+				<div class="activities"></div>
+			</section>
+			<button class="submit-button" type="submit">Сохранить и получить ссылку</button>
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+
+		<!-- Блок ссылок: скрыт, пока профиль не сохранён -->
+		<section class="section link-box" id="links" hidden>
+			<h2>Подписка на расписание</h2>
+			<p class="muted">iCal-ссылка (обновляется автоматически при изменениях):</p>
+			<div class="link-row">
+				<input type="text" id="ical-link" readonly>
+				<button class="copy-btn" id="copy-btn" type="button">Копировать</button>
+			</div>
+			<p><a id="webcal-link" href="#">📅 Подписаться в календаре (webcal)</a></p>
+			<p class="muted">CalDAV (двусторонняя синхронизация, только чтение):</p>
+			<p>Сервер: <code id="caldav-url"></code></p>
+			<p>Логин: <code id="caldav-user"></code> · Пароль: <code id="caldav-pass"></code></p>
+		</section>
+
+		<footer>Расписание меняется — ссылка остаётся прежней</footer>
+	</main>
+	<script src="/static/js/student.js"></script>
+</body>
+</html>

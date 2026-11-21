@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Заявки — админ</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="admin-body">
+	<button class="login logout-btn" id="logout-btn" type="button">Выйти</button>
+
+	<!-- Небольшое меню справа: загрузка CSV и создание преподавателей -->
+	<nav class="side-menu">
+		<a class="side-btn" href="/admin/upload">⬆ Загрузка</a>
+		<a class="side-btn" href="/admin/teachers">＋ Создание</a>
+	</nav>
+
+	<main class="container container--wide">
+		<header>
+			<h1>Заявки преподавателей</h1>
+			<p>Одобрение сразу занимает аудиторию и добавляет лекцию в расписание</p>
+		</header>
+
+		{{if .Requests}}
+		<div class="table-wrap">
+			<table class="table">
+				<thead><tr>
+					<th>№</th><th>Преподаватель</th><th>Лекция</th><th>Для</th>
+					<th>Когда</th><th>Аудитория</th><th>Статус</th><th></th>
+				</tr></thead>
+				<tbody>
+				{{range .Requests}}
+				<tr data-id="{{.ID}}">
+					<td>{{.ID}}</td><td>{{.TeacherName}}</td><td>{{.Title}}</td><td>{{.Target}}</td>
+					<td>{{.Day}} день, {{.Pair}} пара<br><span class="muted">{{.WeekType}}</span></td>
+					<td>{{.Place}}</td>
+					<td><span class="badge badge--{{.Status}}">{{.Status}}</span></td>
+					<td>
+						{{if eq .Status "pending"}}
+						<button class="approve-btn" data-id="{{.ID}}" type="button">Принять</button>
+						<button class="reject-btn" data-id="{{.ID}}" type="button">Отклонить</button>
+						{{else}}—{{end}}
+					</td>
+				</tr>
+				{{end}}
+				</tbody>
+			</table>
+		</div>
+		{{else}}<p class="empty">Заявок пока нет.</p>{{end}}
+		<footer>«Загрузка» — CSV расписания · «Создание» — учётки преподавателей</footer>
+	</main>
+	<script src="/static/js/admin.js"></script>
+</body>
+</html>

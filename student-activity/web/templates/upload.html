@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Загрузка расписания</title>
+	<link rel="stylesheet" href="/static/css/index.css">
+	<link rel="stylesheet" href="/static/css/upload.css">
+	<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+	<main class="container">
+		<header>
+			<h1>Загрузка расписания</h1>
+			<p>CSV: id, prepod_name, group_number, lesson, place, lesson_number,
+			   numerator, denominator, type (+ day: 1–6). До 32 МБ.</p>
+		</header>
+		<form id="upload-form">
+			<section class="section">
+				<label class="upload-btn" for="file-upload-btn">Выберите .csv</label>
+				<input type="file" id="file-upload-btn" name="file" accept=".csv">
+				<p>Файл не выбран</p>
+			</section>
+			<button class="submit-button" type="submit">Импортировать</button>
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+		<pre class="result" id="result" hidden></pre>
+		<footer><a href="/admin">← К заявкам</a></footer>
+	</main>
+	<script src="/static/js/upload.js"></script>
+</body>
+</html>
